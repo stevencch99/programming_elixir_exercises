@@ -14,7 +14,6 @@ defmodule Chop do
     do_guess(ans, range, guess)
   end
 
-
   def guess(ans, _range) when not is_integer(ans) do
     {:error, "Expected an integer and a range where the integer lies within the range."}
   end
@@ -25,20 +24,18 @@ defmodule Chop do
     guess
   end
 
-  defp do_guess(ans, range, guess) when ans < guess do
+  defp do_guess(ans, min.._max, guess) when ans < guess do
     guess_phrase(guess)
 
-    min.._max = range
     new_max = guess - 1
     new_range = min..new_max
     new_guess = do_get_middle(new_range)
     do_guess(ans, new_range, new_guess)
   end
 
-  defp do_guess(ans, range, guess) when ans > guess do
+  defp do_guess(ans, _min..max, guess) when ans > guess do
     guess_phrase(guess)
 
-    _min..max = range
     new_min = guess + 1
     new_range = new_min..max
     new_guess = do_get_middle(new_range)
@@ -46,8 +43,7 @@ defmodule Chop do
   end
 
   # Return the middle of a range
-  def do_get_middle(range) do
-    min..max = range
+  def do_get_middle(min..max) do
     count = max - min + 1
     max - div(count, 2)
   end

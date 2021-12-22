@@ -5,18 +5,28 @@
 # Your API will be guess(actual, range), where range is an Elixir range.
 
 defmodule Chop do
-  def guess(ans, range) when is_integer(ans) do
+  def guess(ans, _range) when not is_integer(ans) do
+    {:error, "Expected an integer and a range where the integer lies within the range."}
+  end
+
+  def guess(ans, range) do
     if ans not in range do
       raise RuntimeError, message: "The given number is not in the range."
     end
 
-    guess = do_get_middle range
+    guess = do_get_middle(range)
+    guess_phrase(guess)
+
     do_guess(ans, range, guess)
   end
 
-  def guess(ans, _range) when not is_integer(ans) do
-    {:error, "Expected an integer and a range where the integer lies within the range."}
+  # Return the middle of a range
+  def do_get_middle(min..max) do
+    count = max - min + 1
+    max - div(count, 2)
   end
+
+  defp guess_phrase(guess_num), do: IO.puts "Is it #{guess_num}?"
 
   defp do_guess(ans, _range, guess) when ans == guess do
     guess_phrase(guess)
@@ -26,7 +36,6 @@ defmodule Chop do
 
   defp do_guess(ans, min.._max, guess) when ans < guess do
     guess_phrase(guess)
-
     new_max = guess - 1
     new_range = min..new_max
     new_guess = do_get_middle(new_range)
@@ -35,19 +44,10 @@ defmodule Chop do
 
   defp do_guess(ans, _min..max, guess) when ans > guess do
     guess_phrase(guess)
-
     new_min = guess + 1
     new_range = new_min..max
     new_guess = do_get_middle(new_range)
     do_guess(ans, new_range, new_guess)
   end
-
-  # Return the middle of a range
-  def do_get_middle(min..max) do
-    count = max - min + 1
-    max - div(count, 2)
-  end
-
-  defp guess_phrase(guess_num), do: IO.puts "Is it #{guess_num}?" 
 end
 
